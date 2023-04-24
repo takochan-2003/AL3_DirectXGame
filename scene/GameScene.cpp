@@ -11,6 +11,11 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	textureHandle_ = TextureManager::Load("tennninnka.png");
+	model_ = Model::Create();
+	delete model_;
+	worldTransform_.Initialize();
+	viewProjection_.Initialize();
 }
 
 void GameScene::Update() {}
