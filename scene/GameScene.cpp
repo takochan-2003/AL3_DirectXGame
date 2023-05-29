@@ -23,6 +23,10 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	player_ = new Player();
 	player_->Initialize(model_,textureHandle_);
+	//敵キャラの作成
+	enemy_ = new Enemy();
+	//敵キャラの初期化
+	enemy_->Initialize(model_, textureHandle_);
 
 	debugCamera_ = new DebugCamera(100, 100);
 
@@ -32,6 +36,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() { 
 	player_->Update();
+	enemy_->Update();
 	debugCamera_->Update();
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_P)) {
@@ -79,6 +84,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 
 
 
