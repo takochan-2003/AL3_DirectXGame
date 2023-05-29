@@ -24,7 +24,23 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 void Enemy::Update(){
 
 	Vector3 move = {0, 0, -0.2f};
+	Vector3 leave = {-0.3f, -0.3f, 0.5f};
 	const float kCharacterSpeed = 0.2f;
+
+	//移動処理(SWitch)
+	switch (phase_) { case Phase::approach:
+	default:
+		//移動(ベクトルを加算)
+		worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+		if (worldTransform_.translation_.z < 100.0f) {
+			phase_ = Phase::Leave;
+		}
+		break;
+	case Phase::Leave:
+		//P7
+		worldTransform_.translation_ = Add(worldTransform_.translation_, leave);
+		break;
+	}
 
 	float EnemyPos[3] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -42,15 +58,15 @@ void Enemy::Update(){
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	// worldTransform_.rotation_ = Add(worldTransform_.translation_, move);
 
-	// 移動限界座標
-	const float kMoveLimitX = 28;
-	const float kMoveLimitY = 14;
-
-	// 範囲を超えない処理
-	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
-	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
-	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
-	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
+	//// 移動限界座標
+	//const float kMoveLimitX = 28;
+	//const float kMoveLimitY = 14;
+	//
+	//// 範囲を超えない処理
+	//worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	//worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	//worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+	//worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	// スケーリング行列を宣言
 	Matrix4x4 matScale;
