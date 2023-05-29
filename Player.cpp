@@ -1,9 +1,11 @@
-﻿#include "player.h"
+﻿#include "Player.h"
 #include <cassert>
 #define _USE_MATH_DEFINES
 #include "ImGuiManager.h"
 #include "keisan.h"
 #include <math.h>
+
+
 
 void Player::Initialize(Model* model, uint32_t textureHndle) {
 	assert(model);
@@ -14,16 +16,31 @@ void Player::Initialize(Model* model, uint32_t textureHndle) {
 	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
+	//解放
+	for (PlayerBullet* bullet : bullets_) {
+		delete bullet;
+	}
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	if (bullet_) {
-		bullet_->Draw(viewProjection);
+	//if (bullet_) {
+	//	bullet_->Draw(viewProjection);
+	//}
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
 	}
 }
 
 void Player::Update() {
+
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 	Vector3 move = {0, 0, 0};
 	const float kCharacterSpeed = 0.2f;
@@ -108,8 +125,8 @@ void Player::Update() {
 
 	// 攻撃処理
 	Attack();
-	if (bullet_) {
-		bullet_->Update();
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
 	}
 }
 
@@ -125,13 +142,21 @@ void Player::Rotate() {
 
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
+		
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+		//向き
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_);
+		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
 		// 弾を登録する
-		bullet_ = newBullet;
+		//bullet_ = newBullet;
+		bullets_.push_back(newBullet);
 	}
 }
+
+Player::~Player() {}
 
 // worldTransform_.translation_ += move;
 //

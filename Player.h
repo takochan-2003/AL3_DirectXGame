@@ -4,6 +4,7 @@
 #include "WorldTransform.h"
 #include"Input.h"
 #include"PlayerBullet.h"
+#include <list>
 
 
 /// <summary>
@@ -12,6 +13,10 @@
 class Player {
 
 	public:
+
+		// デストラクタ
+	    ~Player();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -32,6 +37,8 @@ class Player {
 
 	void Attack();
 
+	
+
 	private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -40,6 +47,6 @@ class Player {
 	Input* input_ = nullptr;
 	float inputFloat[3] = {0, 0, 0};
 	// 弾
-	PlayerBullet* bullet_ = nullptr;
-
+	std::list<PlayerBullet*> bullets_;
+	
 };
