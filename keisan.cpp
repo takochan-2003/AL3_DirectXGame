@@ -4,11 +4,50 @@
 #include "keisan.h"
 #include <math.h>
 
+float k = {4.0f};
+
 Vector3 Add(Vector3 vector1, Vector3 vector2) {
 	Vector3 result = {0};
 	result.x = vector1.x + vector2.x;
 	result.y = vector1.y + vector2.y;
 	result.z = vector1.z + vector2.z;
+	return result;
+}
+
+Vector3 Subtract(Vector3 vector1, Vector3 vector2) {
+	Vector3 result;
+	result.x = vector1.x - vector2.x;
+	result.y = vector1.y - vector2.y;
+	result.z = vector1.z - vector2.z;
+	return result;
+}
+
+Vector3 VectorMultiply(Vector3 vector1, Vector3 vector2) {
+	Vector3 result;
+	result.x = vector1.x * k;
+	result.y = vector1.y * k;
+	result.z = vector1.z * k;
+	return result;
+}
+
+float Dot(Vector3 vector1, Vector3 vector2) {
+	float v;
+	v = vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
+	return v;
+}
+
+float Length(Vector3 v) {
+	float result;
+	result = sqrtf(Dot(v, v));
+	return result;
+}
+
+Vector3 Normalize(const Vector3& v) {
+	Vector3 result;
+	result.x = v.x / Length(v);
+	result.y = v.y / Length(v);
+	result.z = v.z / Length(v);
+
 	return result;
 }
 

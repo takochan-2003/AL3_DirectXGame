@@ -4,6 +4,7 @@
 #include "ImGuiManager.h"
 #include "keisan.h"
 #include <math.h>
+#include "Player.h"
 
 void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 	assert(model);
@@ -13,15 +14,32 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {20.0f, 20.0f, 20.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, 300.0f};
+	worldTransform_.translation_ = {40.0f, 0.0f, 300.0f};
+	Approach();
+	// 解放
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
 
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
 }
 
 void Enemy::Update(){
+
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 
 	Vector3 move = {0, 0, -0.2f};
 	Vector3 leave = {-0.3f, -0.3f, 0.5f};
@@ -56,17 +74,7 @@ void Enemy::Update(){
 	worldTransform_.translation_.z = EnemyPos[2];
 
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
-	// worldTransform_.rotation_ = Add(worldTransform_.translation_, move);
 
-	//// 移動限界座標
-	//const float kMoveLimitX = 28;
-	//const float kMoveLimitY = 14;
-	//
-	//// 範囲を超えない処理
-	//worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
-	//worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
-	//worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
-	//worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
 	// スケーリング行列を宣言
 	Matrix4x4 matScale;
@@ -94,4 +102,58 @@ void Enemy::Update(){
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	worldTransform_.TransferMatrix();
+
+	//接近フェーズの更新関数
+	--fireTimer_;
+	if (fireTimer_ < 0) {
+		Fire();
+		fireTimer_ = kFireInterval;
+	}
+
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 }
+
+void Enemy::Approach() {
+	//発射タイマーを初期化
+	fireTimer_ = 30;
+
+}
+
+void Enemy::Fire() {
+	assert(player_);
+		const float kBulletSpeed = -0.3f;
+	    Vector3 speed = {2.0f, 2.0f, 2.0f};
+	    Vector3 velocity(0, 0, kBulletSpeed);
+
+	    player_->GetWorldPosition();
+		GetWorldPosition();
+	    Vector3 subVector = Subtract(player_->GetWorldPosition(),GetWorldPosition());
+	    subVector=Normalize(subVector);
+	    subVector=VectorMultiply(subVector, speed);
+	    
+		velocity = subVector;
+
+		
+		// 向き
+		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+		// 弾を生成し、初期化
+		EnemyBullet* newBullet = new EnemyBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	
+}
+
+Vector3 Enemy::GetWorldPosition() {
+	    Vector3 worldPos;
+
+	    worldPos.x = worldTransform_.matWorld_.m[3][0];
+	    worldPos.y = worldTransform_.matWorld_.m[3][1];
+	    worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	    return worldPos;
+}
+
+Enemy::~Enemy() {}

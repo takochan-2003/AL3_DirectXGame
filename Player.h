@@ -1,30 +1,28 @@
 #pragma once
 
+#include "Input.h"
 #include "Model.h"
+#include "PlayerBullet.h"
 #include "WorldTransform.h"
-#include"Input.h"
-#include"PlayerBullet.h"
 #include <list>
-
 
 /// <summary>
 /// 自キャラ
 /// </summary>
 class Player {
 
-	public:
-
-		// デストラクタ
-	    ~Player();
+public:
+	// デストラクタ
+	~Player();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model,uint32_t textureHndle);
+	void Initialize(Model* model, uint32_t textureHndle);
 
 	/// <summary>
 	/// 自キャラ
-	///更新
+	/// 更新
 	/// </summary>
 	void Update();
 
@@ -33,13 +31,17 @@ class Player {
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
 
+	// ワールド座標を取得
+	 Vector3 GetWorldPosition();
+
+	
+
+private:
 	void Rotate();
 
 	void Attack();
 
-	
-
-	private:
+private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
@@ -48,5 +50,6 @@ class Player {
 	float inputFloat[3] = {0, 0, 0};
 	// 弾
 	std::list<PlayerBullet*> bullets_;
+
 	
 };

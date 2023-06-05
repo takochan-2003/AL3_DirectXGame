@@ -83,7 +83,7 @@ void Player::Update() {
 	worldTransform_.translation_.z = playerPos[2];
 
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
-	// worldTransform_.rotation_ = Add(worldTransform_.translation_, move);
+	
 
 	// 移動限界座標
 	const float kMoveLimitX = 28;
@@ -132,7 +132,6 @@ void Player::Update() {
 
 void Player::Rotate() {
 	const float kRotSpeed = 0.02f;
-
 	if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
@@ -154,6 +153,16 @@ void Player::Attack() {
 		//bullet_ = newBullet;
 		bullets_.push_back(newBullet);
 	}
+}
+
+Vector3 Player::GetWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
 }
 
 Player::~Player() {}
