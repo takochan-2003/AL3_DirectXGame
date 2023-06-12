@@ -1,21 +1,17 @@
 ﻿#pragma once
+#include "EnemyBullet.h"
+#include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include"Input.h"
-#include"EnemyBullet.h"
 #include <list>
 
 class Player;
 
-
 class Enemy {
 
-	public:
+public:	// メンバ関数
 	// デストラクタ
 	~Enemy();
-
-	//発射感覚
-	static const int kFireInterval = 60;
 
 	void Initialize(Model* model, uint32_t textureHndle);
 
@@ -23,32 +19,38 @@ class Enemy {
 
 	void Draw(ViewProjection& viewProjection);
 
+	Vector3 GetWorldPosition();
+	void SetPlayer(Player* player) { player_ = player; }
 
+private:	// メンバ関数
 	void Fire();
+	void shot(); // メンバ関数
+	void run();
+	void Approach();
+	static void (Enemy::*enemyMove[])(); // メンバ関数ポインタ
 
+
+private:	// メンバ変数
+	// 発射感覚
+	static const int kFireInterval = 60;
+
+	// 自キャラ
 	enum class Phase {
 		approach,
 		Leave,
 	};
-
-	void Approach();
-
-	Vector3 GetWorldPosition();
-
-	//自キャラ
 	Player* player_ = nullptr;
 
-	void SetPlayer(Player* player) { player_ = player; }
-
-	private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Enemy* enemy_ = nullptr;
 	Input* input_ = nullptr;
 	Phase phase_ = Phase::approach;
-	//発射タイマー
-	int32_t fireTimer_ = 0; 
+	// 発射タイマー
+	int32_t fireTimer_ = 0;
 	// 弾
 	std::list<EnemyBullet*> bullets_;
+	
+
 };

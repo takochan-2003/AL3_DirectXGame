@@ -21,7 +21,11 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 		delete bullet;
 	}
 
+	//enemyMove = &Enemy::shot; // ポインタに関数のアドレスを代入
+
 }
+
+
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
@@ -30,6 +34,13 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 		bullet->Draw(viewProjection);
 	}
 }
+
+//フェーズの関数テーブル
+void (Enemy::*Enemy::enemyMove[])() = {
+    &Enemy::shot, // 接近
+    &Enemy::run   // 離脱
+};
+
 
 void Enemy::Update(){
 
@@ -42,23 +53,26 @@ void Enemy::Update(){
 	});
 
 	Vector3 move = {0, 0, -0.2f};
-	Vector3 leave = {-0.3f, -0.3f, 0.5f};
+	Vector3 leave = {0.6f, 0.6f, -1.0f};
 	const float kCharacterSpeed = 0.2f;
 
-	//移動処理(SWitch)
-	switch (phase_) { case Phase::approach:
-	default:
-		//移動(ベクトルを加算)
-		worldTransform_.translation_ = Add(worldTransform_.translation_, move);
-		if (worldTransform_.translation_.z < 100.0f) {
-			phase_ = Phase::Leave;
-		}
-		break;
-	case Phase::Leave:
-		//P7
-		worldTransform_.translation_ = Add(worldTransform_.translation_, leave);
-		break;
-	}
+	////移動処理(SWitch)
+	//switch (phase_) { case Phase::approach:
+	//default:
+	//	//移動(ベクトルを加算)
+	//	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	//	if (worldTransform_.translation_.z < 100.0f) {
+	//		phase_ = Phase::Leave;
+	//	}
+	//	break;
+	//case Phase::Leave:
+	//	//P7
+	//	worldTransform_.translation_ = Add(worldTransform_.translation_, leave);
+	//	break;
+	//}
+
+	//2-7の実践
+	(this->*enemyMove[static_cast<size_t>(phase_)])(); // shotを呼び出す
 
 	float EnemyPos[3] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
@@ -115,6 +129,8 @@ void Enemy::Update(){
 	}
 }
 
+Enemy::~Enemy() {}
+
 void Enemy::Approach() {
 	//発射タイマーを初期化
 	fireTimer_ = 30;
@@ -146,6 +162,19 @@ void Enemy::Fire() {
 	
 }
 
+void Enemy::shot() {
+	    Vector3 move = {0, 0, -0.2f};
+	    worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	    if (worldTransform_.translation_.z < 100.0f) {
+		phase_ = Phase::Leave;
+	    }
+}
+
+void Enemy::run() { 
+	Vector3 leave = {0.6f, 0.6f, -1.0f};
+	worldTransform_.translation_ = Add(worldTransform_.translation_, leave);
+}
+
 Vector3 Enemy::GetWorldPosition() {
 	    Vector3 worldPos;
 
@@ -156,4 +185,3 @@ Vector3 Enemy::GetWorldPosition() {
 	    return worldPos;
 }
 
-Enemy::~Enemy() {}
