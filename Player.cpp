@@ -165,6 +165,8 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
+void Player::OnCollision() {}
+
 Player::~Player() {}
 
 // worldTransform_.translation_ += move;

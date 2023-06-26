@@ -14,10 +14,17 @@ public:
 
 	bool IsDead() const { return isDead_; }
 
+	// コールバック関数
+	void OnCollision();
+
+		// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
+	EnemyBullet* enemybullet_ = nullptr;
 	// 速度
 	Vector3 velocity_ = {0.0f};
 	// 寿命

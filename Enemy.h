@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
+
 #include <list>
 
 class Player;
@@ -21,6 +22,12 @@ public:	// メンバ関数
 
 	Vector3 GetWorldPosition();
 	void SetPlayer(Player* player) { player_ = player; }
+
+	//コールバック関数
+	void OnCollision();
+
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 
 private:	// メンバ関数
 	void Fire();
@@ -51,6 +58,8 @@ private:	// メンバ変数
 	int32_t fireTimer_ = 0;
 	// 弾
 	std::list<EnemyBullet*> bullets_;
+	
+
 	
 
 };

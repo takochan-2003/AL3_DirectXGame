@@ -15,6 +15,12 @@ class PlayerBullet {
 
 	bool IsDead() const { return isDead_; }
 
+	// コールバック関数
+	void OnCollision();
+
+		// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 	private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;

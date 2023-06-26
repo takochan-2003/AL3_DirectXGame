@@ -34,7 +34,11 @@ public:
 	// ワールド座標を取得
 	 Vector3 GetWorldPosition();
 
-	
+	// コールバック関数
+	 void OnCollision();
+
+	 	// 弾リストを取得
+	 const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 
 private:
 	void Rotate();
