@@ -14,12 +14,13 @@
 #include "Skydome.h"
 #include "DebugCamera.h"
 #include "RailCamera.h"
+#include "EnemyBullet.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
 
-
+class Enemy;
 
 class GameScene {
 
@@ -59,6 +60,9 @@ public: // メンバ関数
 	/// </summary>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -82,7 +86,8 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
-
+	// 弾
+	std::list<EnemyBullet*> bullets_;
 
 	/// <summary>
 	/// ゲームシーン用

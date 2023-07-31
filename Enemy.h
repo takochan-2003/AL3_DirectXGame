@@ -8,6 +8,8 @@
 
 class Player;
 
+class GameScene;
+
 class Enemy {
 
 public:	// メンバ関数
@@ -26,8 +28,7 @@ public:	// メンバ関数
 	//コールバック関数
 	void OnCollision();
 
-	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+	void SetGameScene(GameScene* gamescene) { gamescene_ = gamescene; }
 
 private:	// メンバ関数
 	void Fire();
@@ -57,9 +58,9 @@ private:	// メンバ変数
 	Phase phase_ = Phase::approach;
 	// 発射タイマー
 	int32_t fireTimer_ = 0;
-	// 弾
-	std::list<EnemyBullet*> bullets_;
 	
+	//ゲームシーン
+	GameScene* gamescene_ = nullptr;
 
 	
 

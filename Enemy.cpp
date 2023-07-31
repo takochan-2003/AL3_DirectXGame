@@ -16,10 +16,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = {40.0f, 0.0f, 300.0f};
 	Approach();
-	// 解放
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
+	
 
 	//enemyMove = &Enemy::shot; // ポインタに関数のアドレスを代入
 
@@ -27,13 +24,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 
 
 
-void Enemy::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
-}
 
 //フェーズの関数テーブル
 void (Enemy::*Enemy::enemyMove[])() = {
@@ -44,13 +35,7 @@ void (Enemy::*Enemy::enemyMove[])() = {
 
 void Enemy::Update(){
 
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
+
 
 	Vector3 move = {0, 0, -0.2f};
 	Vector3 leave = {0.6f, 0.6f, -1.0f};
