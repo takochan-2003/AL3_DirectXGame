@@ -149,9 +149,6 @@ void Enemy::Fire() {
 	    
 		velocity = subVector;
 
-		
-		// 向き
-		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		// 弾を生成し、初期化
 		EnemyBullet* newBullet = new EnemyBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);

@@ -229,6 +229,6 @@ void GameScene::CheakAllCollisions() {
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 	//リストに登録する
-	
+	bullets_.push_back(enemyBullet);
 
 }

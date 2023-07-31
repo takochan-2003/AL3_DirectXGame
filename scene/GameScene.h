@@ -82,7 +82,8 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
-
+	// 弾
+	std::list<EnemyBullet*> bullets_;
 
 	/// <summary>
 	/// ゲームシーン用
