@@ -10,6 +10,8 @@ GameScene::~GameScene() {
 delete model_; 
 delete player_;
 delete debugCamera_;
+delete modelSkydome_;
+delete railCamera_;
 }
 
 void GameScene::Initialize() {
@@ -22,14 +24,27 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	player_ = new Player();
-	player_->Initialize(model_,textureHandle_);
+	Vector3 playerPosition(0, 0, -1);
+	player_->Initialize(model_,textureHandle_,playerPosition);
+	
 	
 	//敵キャラの作成
 	enemy_ = new Enemy();
 	//敵キャラの初期化
 	enemy_->Initialize(model_, textureHandle_);
 
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	skydome_ = new Skydome();
+	skydome_->Initialize(modelSkydome_, textureHandle_);
+
+	//レールカメラ
+	railCamera_ = new RailCamera();
+	railCamera_->Initialize(worldPos,rotate);
+
 	debugCamera_ = new DebugCamera(100, 100);
+
+	//自キャラとレールカメラの親子関係を結ぶ
+	player_->Setparent(&railCamera_->GetWorldTransform());
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
@@ -40,13 +55,17 @@ void GameScene::Initialize() {
 void GameScene::Update() { 
 	player_->Update();
 	enemy_->Update();
+	skydome_->Update();
 	GameScene::CheakAllCollisions();
 	debugCamera_->Update();
+	railCamera_->Update();
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_P)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 	#endif;
+
+	
 
 	//カメラの処理
 	if (isDebugCameraActive_) {
@@ -57,7 +76,10 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	} else {
 	//ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の更新
+		viewProjection_.TransferMatrix();
 	}
 }
 
@@ -89,7 +111,7 @@ void GameScene::Draw() {
 	/// </summary>
 	player_->Draw(viewProjection_);
 	enemy_->Draw(viewProjection_);
-
+	skydome_->Draw(viewProjection_);
 
 
 	// 3Dオブジェクト描画後処理
@@ -120,9 +142,9 @@ void GameScene::CheakAllCollisions() {
 	float posAB;
 
 	//自キャラの半径
-	float playerRadius = 4.0f;
+	float playerRadius = 40.0f;
 	//敵弾の半径
-	float enemyBulletRadius = 3.0f;
+	float enemyBulletRadius = 30.0f;
 
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
@@ -203,4 +225,10 @@ void GameScene::CheakAllCollisions() {
 		}
 	}
 	#pragma endregion
+}
+
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
+	//リストに登録する
+	
+
 }

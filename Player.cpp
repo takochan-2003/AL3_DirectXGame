@@ -7,7 +7,7 @@
 
 
 
-void Player::Initialize(Model* model, uint32_t textureHndle) {
+void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotision) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHndle;
@@ -15,7 +15,7 @@ void Player::Initialize(Model* model, uint32_t textureHndle) {
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
+	worldTransform_.translation_ = {0.0f, 0.0f, 20.0f};
 	//解放
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
@@ -74,7 +74,6 @@ void Player::Update() {
 
 	// 画面の座標を表示
 	ImGui::Begin("Player");
-	// ImGui::InputFloat3("playerPos", playerPos);
 	ImGui::SliderFloat3("playerPos", playerPos, -28.0f, 28.0f);
 	ImGui::End();
 
@@ -94,34 +93,8 @@ void Player::Update() {
 	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
-
-	// スケーリング行列を宣言
-	Matrix4x4 matScale;
-	matScale.m[0][0] = worldTransform_.scale_.x;
-	matScale.m[1][1] = worldTransform_.scale_.y;
-	matScale.m[2][2] = worldTransform_.scale_.z;
-	matScale.m[3][3] = 1;
-
-	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(worldTransform_.rotation_.x);
-	Matrix4x4 rotateYMatriy = MakeRotateYMatrix(worldTransform_.rotation_.y);
-	Matrix4x4 rotateZMatriz = MakeRotateZMatrix(worldTransform_.rotation_.z);
-	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatriy, rotateZMatriz));
-
-	// 平行移動行列を宣言
-	Matrix4x4 matTrans;
-	matTrans.m[0][0] = 1;
-	matTrans.m[1][1] = 1;
-	matTrans.m[2][2] = 1;
-	matTrans.m[3][3] = 1;
-	matTrans.m[3][0] = worldTransform_.translation_.x;
-	matTrans.m[3][1] = worldTransform_.translation_.y;
-	matTrans.m[3][2] = worldTransform_.translation_.z;
-
-	// worldTransform_.matWorld_ = Multiply(matScale, Multiply(rotateXYZMatrix,matTrans));
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	worldTransform_.TransferMatrix();
+	
+	worldTransform_.UpdateMatrix();
 
 	// 攻撃処理
 	Attack();
@@ -148,7 +121,7 @@ void Player::Attack() {
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		// 弾を登録する
 		//bullet_ = newBullet;
 		bullets_.push_back(newBullet);
@@ -167,12 +140,8 @@ Vector3 Player::GetWorldPosition() {
 
 void Player::OnCollision() {}
 
+//親子関係を結ぶ
+void Player::Setparent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
+
 Player::~Player() {}
 
-// worldTransform_.translation_ += move;
-//
-//
-//
-//
-//
-// }

@@ -46,6 +46,7 @@ private:	// メンバ変数
 		approach,
 		Leave,
 	};
+
 	Player* player_ = nullptr;
 
 	WorldTransform worldTransform_;

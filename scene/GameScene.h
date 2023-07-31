@@ -11,11 +11,16 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "EnemyBullet.h"
+#include "Skydome.h"
 #include "DebugCamera.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
+
+
+
 class GameScene {
 
 public: // メンバ関数
@@ -49,7 +54,11 @@ public: // メンバ関数
 	/// </summary>
 	void CheakAllCollisions();
 
-	
+	/// <summary>
+	/// 敵弾を追加しよう
+	/// </summary>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -62,11 +71,19 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	EnemyBullet* enemybullet_ = nullptr;
-
+	Skydome* skydome_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+	//レールカメラをゲームシーンに持たせる
+	RailCamera* railCamera_ = nullptr;
+	Vector3 worldPos;
+	Vector3 rotate;
 	//デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
+
+
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

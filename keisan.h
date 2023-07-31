@@ -6,6 +6,7 @@
 Vector3 Add(Vector3 vector1, Vector3 vector2);
 Vector3 Subtract(Vector3 vector1, Vector3 vector2);
 Vector3 VectorMultiply(Vector3 vector1, Vector3 vector2);
+Matrix4x4 Inverse(const Matrix4x4& m);
 
 Vector3 Normalize(const Vector3& v);
 float Length(Vector3 v);

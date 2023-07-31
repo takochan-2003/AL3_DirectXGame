@@ -18,7 +18,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, uint32_t textureHndle);
+	void Initialize(Model* model, uint32_t textureHndle, Vector3 playerPotision);
 
 	/// <summary>
 	/// 自キャラ
@@ -36,6 +36,11 @@ public:
 
 	// コールバック関数
 	 void OnCollision();
+
+	 //親子関係を結ぶ
+	 void Setparent(const WorldTransform* parent);
+
+	// const WorldTransform& GetWorldTransform() { return worldTransform_; }
 
 	 	// 弾リストを取得
 	 const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }

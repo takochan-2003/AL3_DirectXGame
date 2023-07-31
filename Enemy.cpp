@@ -143,8 +143,6 @@ void Enemy::Fire() {
 	    Vector3 speed = {2.0f, 2.0f, 2.0f};
 	    Vector3 velocity(0, 0, kBulletSpeed);
 
-	    player_->GetWorldPosition();
-		GetWorldPosition();
 	    Vector3 subVector = Subtract(player_->GetWorldPosition(),GetWorldPosition());
 	    subVector=Normalize(subVector);
 	    subVector=VectorMultiply(subVector, speed);
