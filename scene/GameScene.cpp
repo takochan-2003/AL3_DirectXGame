@@ -12,6 +12,7 @@ delete player_;
 delete debugCamera_;
 delete modelSkydome_;
 delete railCamera_;
+delete sprite_;
 }
 
 void GameScene::Initialize() {
@@ -20,6 +21,8 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	textureHandle_ = TextureManager::Load("tennninnka.png");
+	textureHandle2_ = TextureManager::Load("clear.png");
+	sprite_ = Sprite::Create(textureHandle2_, {0,0});
 	model_ = Model::Create();
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
@@ -59,12 +62,16 @@ void GameScene::Update() {
 	GameScene::CheakAllCollisions();
 	debugCamera_->Update();
 	railCamera_->Update();
+	enemy_->isDead();
 	#ifdef _DEBUG
 	if (input_->TriggerKey(DIK_P)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 	#endif;
-
+	
+	if (enemyHP <= 0) {
+		isAlive = false;
+	}
 	
 
 	//カメラの処理
@@ -125,6 +132,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	if (isAlive == false) {
+
+		sprite_->Draw();
+	}
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -203,6 +214,7 @@ void GameScene::CheakAllCollisions() {
 			enemy_->OnCollision();
 			// 敵キャラの衝突時コールバックを呼び出す
 			bullet->OnCollision();
+			enemyHP -= 1;
 		}
 
 	}

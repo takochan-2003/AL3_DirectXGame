@@ -13,9 +13,9 @@ void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotisi
 	textureHandle_ = textureHndle;
 	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
-	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
+	worldTransform_.scale_ = {2.0f, 2.0f, 2.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, 20.0f};
+	worldTransform_.translation_ = {0.0f, 0.0f, 30.0f};
 	//解放
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
@@ -73,9 +73,9 @@ void Player::Update() {
 	    worldTransform_.translation_.z};
 
 	// 画面の座標を表示
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("playerPos", playerPos, -28.0f, 28.0f);
-	ImGui::End();
+	//ImGui::Begin("Player");
+	//ImGui::SliderFloat3("playerPos", playerPos, -28.0f, 28.0f);
+	//ImGui::End();
 
 	worldTransform_.translation_.x = playerPos[0];
 	worldTransform_.translation_.y = playerPos[1];

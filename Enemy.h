@@ -26,6 +26,8 @@ public:	// メンバ関数
 	//コールバック関数
 	void OnCollision();
 
+	void isDead();
+
 	// 弾リストを取得
 	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 
@@ -52,6 +54,11 @@ private:	// メンバ変数
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
+
+	uint32_t textureHandle2_ = 0;
+
+	
+
 	Enemy* enemy_ = nullptr;
 	Input* input_ = nullptr;
 	Phase phase_ = Phase::approach;
@@ -60,7 +67,9 @@ private:	// メンバ変数
 	// 弾
 	std::list<EnemyBullet*> bullets_;
 	
-
+	// 敵を倒す
+	int enemyHP = 20;
+	int isAlive = true;
 	
 
 };

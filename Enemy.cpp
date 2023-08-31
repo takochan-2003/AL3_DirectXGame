@@ -10,16 +10,18 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = TextureManager::Load("KOKUDO.png");
+	textureHandle2_ = TextureManager::Load("tex1.png");
 	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {20.0f, 20.0f, 20.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {40.0f, 0.0f, 300.0f};
+	worldTransform_.translation_ = {0.0f, 0.0f, 300.0f};
 	Approach();
 	// 解放
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	
 
 	//enemyMove = &Enemy::shot; // ポインタに関数のアドレスを代入
 
@@ -79,9 +81,9 @@ void Enemy::Update(){
 	    worldTransform_.translation_.z};
 
 	// 画面の座標を表示
-	ImGui::Begin("Enemy");
-	ImGui::SliderFloat3("EnemyPos", EnemyPos, 600.0f, -600.0f);
-	ImGui::End();
+	//ImGui::Begin("Enemy");
+	//ImGui::SliderFloat3("EnemyPos", EnemyPos, 600.0f, -600.0f);
+	//ImGui::End();
 
 	worldTransform_.translation_.x = EnemyPos[0];
 	worldTransform_.translation_.y = EnemyPos[1];
@@ -127,6 +129,8 @@ void Enemy::Update(){
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
 	}
+
+
 }
 
 Enemy::~Enemy() {}
@@ -183,5 +187,14 @@ Vector3 Enemy::GetWorldPosition() {
 	    return worldPos;
 }
 
-void Enemy::OnCollision() {}
+void Enemy::OnCollision() { enemyHP -= 1; }
+
+void Enemy::isDead() {
+	    if (enemyHP <= 0) {
+		isAlive = false;
+	    }
+	    if (isAlive == false) {
+		worldTransform_.translation_ = {10000.0f, 10000.0f, 300.0f};
+	    }
+}
 

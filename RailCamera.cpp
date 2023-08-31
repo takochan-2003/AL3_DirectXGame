@@ -15,7 +15,7 @@ void RailCamera::Initialize(Vector3& worldPos, Vector3& rotate) {
 void RailCamera::Update() {
 
 	//移動
-	Vector3 move = {0, 0, -1};
+	Vector3 move = {0, 0, 0};
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	//回転
 	const float kRotSpeed = 0.00f;
@@ -39,10 +39,10 @@ void RailCamera::Update() {
 	    worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z};
 
 	//カメラの座標を画面表示する処理
-	ImGui::Begin("Camera");
-	ImGui::SliderFloat3("CameraTranslation", translate, 600.0f, -600.0f);
-	ImGui::SliderFloat3("CameraTranslation", rotate, 600.0f, -600.0f);
-	ImGui::End();
+	//ImGui::Begin("Camera");
+	//ImGui::SliderFloat3("CameraTranslation", translate, 600.0f, -600.0f);
+	//ImGui::SliderFloat3("CameraTranslation", rotate, 600.0f, -600.0f);
+	//ImGui::End();
 }
 
 Vector3 RailCamera::GetWorldPosition() {

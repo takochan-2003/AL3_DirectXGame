@@ -82,7 +82,11 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
+	uint32_t textureHandle2_ = 0;
+	Sprite* sprite_ = nullptr;
 
+	int enemyHP = 20;
+	int isAlive = true;
 
 	/// <summary>
 	/// ゲームシーン用
