@@ -21,6 +21,8 @@ class PlayerBullet {
 		// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+
+
 	private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;

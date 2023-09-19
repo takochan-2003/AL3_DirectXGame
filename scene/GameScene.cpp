@@ -12,6 +12,16 @@ delete player_;
 delete debugCamera_;
 delete modelSkydome_;
 delete railCamera_;
+
+//Enemyの解放
+for (Enemy* enemy : enemys_) {
+	delete enemy;
+}
+
+// 解放
+for (EnemyBullet* bullet : enemybullets_) {
+	delete bullet;
+}
 }
 
 void GameScene::Initialize() {
@@ -26,12 +36,6 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	Vector3 playerPosition(0, 0, -1);
 	player_->Initialize(model_,textureHandle_,playerPosition);
-	
-	
-	//敵キャラの作成
-	enemy_ = new Enemy();
-	//敵キャラの初期化
-	enemy_->Initialize(model_, textureHandle_);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	skydome_ = new Skydome();
@@ -50,11 +54,12 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 	//敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
+
+
 }
 
 void GameScene::Update() { 
-	player_->Update();
-	enemy_->Update();
+	
 	skydome_->Update();
 	GameScene::CheakAllCollisions();
 	debugCamera_->Update();
@@ -81,6 +86,26 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の更新
 		viewProjection_.TransferMatrix();
 	}
+
+	player_->Update();
+	//敵キャラの更新
+	for (Enemy* enemy : enemys_) {
+		enemy_->Update();
+	}
+
+	//弾更新
+	for (EnemyBullet* bullet : enemybullets_) {
+		bullet->Update();
+	}
+
+	//デスフラグの立った弾を削除
+	 enemybullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	 });
 }
 
 void GameScene::Draw() {
@@ -228,7 +253,20 @@ void GameScene::CheakAllCollisions() {
 }
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
-	//リストに登録する
-	bullets_.push_back(enemyBullet);
 
+	//リストに登録する
+	enemybullets_.push_back(enemyBullet);
+
+}
+
+void GameScene::EnemySpawn(Vector3 position, Vector3 velocity) {
+     Enemy* enemy = new Enemy();
+	 //初期化
+	 enemy->Initialize(model_, position, velocity);
+	 //敵キャラに自キャラのアドレスを渡す
+	 enemy->SetPlayer(player_);
+	 //敵キャラにゲームシーンを渡す
+	 enemy->SetGameScene(this);
+	 //リストに登録
+	 enemys_.push_back(enemy);
 }

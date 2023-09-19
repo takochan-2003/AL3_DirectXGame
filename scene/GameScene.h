@@ -59,6 +59,15 @@ public: // メンバ関数
 	/// </summary>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	//敵の発生
+	void EnemySpawn(Vector3 position, Vector3 velocity);
+
+	//敵発生のデータの読み込み
+	void LoadEnemyPopData();
+
+	//敵発生のコマンドの更新
+	void UpdateEnemyPopCommands();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -82,8 +91,20 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
+	// 敵リスト
+	std::list<Enemy*> enemys_;
+
+	/////敵弾リストの変数
 	// 弾
-	std::list<EnemyBullet*> bullets_;
+	std::list<EnemyBullet*> enemybullets_;
+	// 速度
+	Vector3 velocity_ = {0.0f};
+	// 寿命
+	static const int32_t kLifeTime = 60 * 5;
+	// デスタイマー
+	int32_t deathTimer_ = kLifeTime;
+	// ですフラグ
+	bool isDead_ = false;
 
 	/// <summary>
 	/// ゲームシーン用

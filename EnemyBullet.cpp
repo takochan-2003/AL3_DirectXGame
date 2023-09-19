@@ -13,20 +13,20 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 void EnemyBullet::Update() {
 
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
-
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	worldTransform_.TransferMatrix();
-	// 時間経過でデス
-	if (--deathTimer_ <= 0) {
-		isDead_ = true;
-	}
+	//worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
+	//
+	//worldTransform_.matWorld_ = MakeAffineMatrix(
+	//    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	//
+	//worldTransform_.TransferMatrix();
+	//// 時間経過でデス
+	//if (--deathTimer_ <= 0) {
+	//	isDead_ = true;
+	//}
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	//model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
 
 void EnemyBullet::OnCollision() { isDead_ = true; }
