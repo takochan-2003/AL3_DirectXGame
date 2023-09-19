@@ -68,6 +68,13 @@ public: // メンバ関数
 	//敵発生のコマンドの更新
 	void UpdateEnemyPopCommands();
 
+	// 敵リスト
+	std::list<Enemy*> enemys_;
+
+	/////敵弾リストの変数
+	// 弾
+	std::list<EnemyBullet*> enemybullets_;
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -91,12 +98,7 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
-	// 敵リスト
-	std::list<Enemy*> enemys_;
-
-	/////敵弾リストの変数
-	// 弾
-	std::list<EnemyBullet*> enemybullets_;
+	
 	// 速度
 	Vector3 velocity_ = {0.0f};
 	// 寿命
