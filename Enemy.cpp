@@ -5,21 +5,23 @@
 #include "keisan.h"
 #include <math.h>
 #include "Player.h"
+#include "GameScene.h"
 
-void Enemy::Initialize(Model* model, uint32_t textureHndle) {
+void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity){
+
 	assert(model);
+
 	model_ = model;
+
 	textureHandle_ = TextureManager::Load("KOKUDO.png");
+
 	worldTransform_.Initialize();
-	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {20.0f, 20.0f, 20.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
 	worldTransform_.translation_ = {40.0f, 0.0f, 300.0f};
+
 	Approach();
-	// 解放
-	for (EnemyBullet* bullet : bullets_) {
-		delete bullet;
-	}
+	input_ = Input::GetInstance();
 
 	//enemyMove = &Enemy::shot; // ポインタに関数のアドレスを代入
 
@@ -29,10 +31,6 @@ void Enemy::Initialize(Model* model, uint32_t textureHndle) {
 
 void Enemy::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
-	for (EnemyBullet* bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
 }
 
 //フェーズの関数テーブル
@@ -43,14 +41,6 @@ void (Enemy::*Enemy::enemyMove[])() = {
 
 
 void Enemy::Update(){
-
-	bullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
 
 	Vector3 move = {0, 0, -0.2f};
 	Vector3 leave = {0.6f, 0.6f, -1.0f};
@@ -153,7 +143,7 @@ void Enemy::Fire() {
 		EnemyBullet* newBullet = new EnemyBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 		// 弾を登録する
-		bullets_.push_back(newBullet);
+	    gamescene_->AddEnemyBullet(newBullet);
 	
 }
 

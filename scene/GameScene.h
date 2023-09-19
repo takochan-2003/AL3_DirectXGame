@@ -15,6 +15,8 @@
 #include "DebugCamera.h"
 #include "RailCamera.h"
 
+#include <sstream>
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -59,6 +61,31 @@ public: // メンバ関数
 	/// </summary>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	/// <summary>
+	/// 敵の発生
+	/// </summary>
+	void EnemySpawn(Vector3 position, Vector3 velocity);
+
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
+
+	public:
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
+
+	// 敵リスト
+	std::list<Enemy*> enemys_;
+
+	// 敵発生コマンド
+	std::stringstream enemyPopCommands;
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -82,9 +109,18 @@ private: // メンバ変数
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
-	// 弾
-	std::list<EnemyBullet*> bullets_;
+	//Enemyのメンバ変数
 
+	// 発射感覚
+	static const int kFireInterval = 60;
+
+	// 自キャラ
+	enum class Phase {
+		approach,
+		Leave,
+	};
+
+	static void (Enemy::*enemyMove[])(); // メンバ関数ポインタ
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

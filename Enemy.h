@@ -16,7 +16,7 @@ public:	// メンバ関数
 	// デストラクタ
 	~Enemy();
 
-	void Initialize(Model* model, uint32_t textureHndle);
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
 
 	void Update();
 
