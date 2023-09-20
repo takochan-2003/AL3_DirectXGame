@@ -21,7 +21,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = {20.0f, 20.0f, 20.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	//worldTransform_.translation_ = {40.0f, 100.0f, 300.0f};
+	worldTransform_.translation_ = position;
 
 	Approach();
 	input_ = Input::GetInstance();
