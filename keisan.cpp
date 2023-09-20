@@ -30,6 +30,16 @@ Vector3 VectorMultiply(Vector3 vector1, Vector3 vector2) {
 	return result;
 }
 
+Vector3 VectorSubtract(Vector3 v1, Vector3 v2) {
+	Vector3 result;
+	
+	result.x = v1.x - v2.x;
+	result.y = v1.y - v2.y;
+	result.z = v1.z - v2.z;
+
+	return result;
+}
+
 Matrix4x4 Inverse(const Matrix4x4& m) {
 	float A;
 	A = m.m[0][0] * m.m[1][1] * m.m[2][2] * m.m[3][3] +
@@ -219,6 +229,26 @@ Matrix4x4 Multiply(Matrix4x4 m1, Matrix4x4 m2) {
 	                 m1.m[3][3] * m2.m[3][3];
 	return result;
 };
+
+Vector3 VectorMatrixMultiply(Vector3 v, const Matrix4x4 m1) {
+	Vector3 result;
+
+	result.x = m1.m[0][0] * v.x + m1.m[0][1] * v.x + m1.m[0][2] * v.x;
+	result.y = m1.m[1][0] * v.y + m1.m[1][1] * v.y + m1.m[1][2] * v.y;
+	result.z = m1.m[2][0] * v.z + m1.m[2][1] * v.z + m1.m[2][2] * v.z;
+
+	return result;
+}
+
+Vector3 VectorIndexMultiply(Vector3 v, float k) { 
+	Vector3 result;
+
+	result.x = v.x * k;
+	result.y = v.y * k;
+	result.z = v.z * k;
+
+	return result;
+}
 
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);

@@ -10,7 +10,7 @@
 void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotision) {
 	assert(model);
 	model_ = model;
-	textureHandle_ = textureHndle;
+	
 	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
@@ -20,10 +20,16 @@ void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotisi
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+
+	//3Dレティクルのワールドトランスフォーム初期化
+	worldTransform3DReticle_.Initialize();
+
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
+	model_->Draw(worldTransform3DReticle_, viewProjection);
+
 	//if (bullet_) {
 	//	bullet_->Draw(viewProjection);
 	//}
@@ -96,6 +102,27 @@ void Player::Update() {
 	
 	worldTransform_.UpdateMatrix();
 
+	//自機のワールド座標から3Dレティクルのワールド座標を計算
+	{
+		//自機から3Dレティクルへの距離
+		const float kDistancePlayerTo3DReticle = 50.0f;
+		//自機から3Dレティクルへのオフセット（Z+向き）
+		Vector3 offset = {0, 0, 1.0f};
+		//自機のワールド行列の回転を反映
+		offset = VectorMatrixMultiply(offset, worldTransform_.matWorld_);
+		//ベクトルの長さを整える
+		offset = VectorIndexMultiply(Normalize(offset),kDistancePlayerTo3DReticle);
+		//3Dレティクルの座標を設定
+		worldTransform3DReticle_.translation_ = offset;
+		//ワールド行列の更新と転送
+		worldTransform_.matWorld_ = MakeAffineMatrix(
+		    worldTransform_.scale_,
+			worldTransform_.rotation_,
+			worldTransform_.translation_);
+		
+		worldTransform_.TransferMatrix();
+	}
+	
 	// 攻撃処理
 	Attack();
 	for (PlayerBullet* bullet : bullets_) {
@@ -116,9 +143,11 @@ void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
 		
 		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
+		Vector3 velocity(0, 0, 0);
 		//向き
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+		velocity = VectorSubtract(worldTransform3DReticle_.translation_,worldTransform_.translation_);
+		velocity = VectorIndexMultiply(Normalize(velocity),kBulletSpeed);
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
