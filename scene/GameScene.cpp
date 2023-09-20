@@ -3,6 +3,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include "AxisIndicator.h"
+#include <fstream>
 
 GameScene::GameScene() {}
 
@@ -45,9 +46,10 @@ void GameScene::Initialize() {
 	const float kEnemySpeedZ = 0.1f;
 	//敵の移動
 	Vector3 velocity(kEnemySpeedX, kEnemySpeedY, kEnemySpeedZ);
-	Vector3 EnemyPosition = {20.0f, 0.0f, 40.0f};
+	Vector3 EnemyPosition = {200.0f, 1000.0f, 40.0f};
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_, textureHandle_);
 
@@ -62,7 +64,8 @@ void GameScene::Initialize() {
 
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
-	//敵キャラに自キャラのアドレスを渡す
+	
+	LoadEnemyPopData();
 }
 
 void GameScene::Update() { 
@@ -70,7 +73,7 @@ void GameScene::Update() {
 	railCamera_->Update();
 
 	debugCamera_->Update();
-	enemy_->Update();
+
 	skydome_->Update();
 	GameScene::CheakAllCollisions();
 	#ifdef _DEBUG
@@ -95,13 +98,14 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の更新
 		viewProjection_.TransferMatrix();
 	}
+	//敵キャラの更新、スポーンも入ってる
+	UpdateEnemyPopCommands();
 
 	//自キャラの更新
 	player_->Update();
 
-	//敵キャラの更新
 
-	//敵キャラの更新
+	//敵キャラの更新（リスト）
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
 	}
@@ -119,8 +123,7 @@ void GameScene::Update() {
 		}
 		return false;
 	});
-
-	EnemySpawn(Vector3(10.0f, 0.0f, 40.0f), {0.0f,0.0f,0.0f});
+\
 
 }
 
@@ -203,6 +206,83 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 
 }
 
+void GameScene::LoadEnemyPopData() {
+	//ファイルを開く
+	std::ifstream file;
+	file.open("./Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	//ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands << file.rdbuf();
+
+	//ファイルを閉じる
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands() {
+	//待機処理
+	if (enemyPopWaitFlag) {
+		enemyPopWaitTimer--;
+		if (enemyPopWaitTimer <= 0) {
+		//待機完了
+			enemyPopWaitFlag = false;
+		}
+		return;
+	}
+
+	//1行分の文字列を入れる変数
+	std::string line;
+
+	//コマンド実行ループ
+	while (getline(enemyPopCommands, line)) {
+	
+	//1行分のもおじ列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line);
+	
+	    std::string word;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word, ',');
+
+	    // "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			continue;
+		}
+
+		//POPコマンド
+		if (word.find("POP") == 0) {
+			//x座標
+			getline(line_stream,word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			//y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			//z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			//敵を発生させる
+			EnemySpawn(Vector3(x, y, z), {0.0f, 0.0f, 0.0f});
+		}
+		//WAITコマンド
+		else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			//待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			//待機時間
+			enemyPopWaitFlag = true;
+			enemyPopWaitTimer = waitTime;
+
+			//コマンドループを抜ける
+			break;
+		}
+	
+	}
+}
+
 void GameScene::CheakAllCollisions() {
 	//判定対象AとBの座標
 	Vector3 posA, posB, posC, posD;
@@ -218,14 +298,14 @@ void GameScene::CheakAllCollisions() {
 	//自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	//敵弾リストの取得
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+	//const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 
 	#pragma region 自キャラと敵弾の当たり判定
 	//自キャラのワールド座標
 	posA = player_->GetWorldPosition();
 
 	//自キャラと敵弾すべての当たり判定
-	for (EnemyBullet* bullet : enemyBullets) {
+	for (EnemyBullet* bullet : enemyBullets_) {
 	//敵弾の座標
 		posB = bullet->GetWorldPosition();
 		//AとBの距離を求める
@@ -257,7 +337,7 @@ void GameScene::CheakAllCollisions() {
 	float posCD;
 	for (Enemy* enemy : enemys_) {
 		// 敵キャラのワールド座標
-		posC = enemy_->GetWorldPosition();
+		posC = enemy->GetWorldPosition();
 
 		// 自弾と敵キャラの当たり判定
 		for (PlayerBullet* bullet : playerBullets) {
@@ -281,7 +361,7 @@ void GameScene::CheakAllCollisions() {
 	#pragma region 自弾と敵弾の当たり判定
 	float posBD;
 	for (PlayerBullet* playerbullet : playerBullets) {
-		for (EnemyBullet* enemybullet : enemyBullets) {
+		for (EnemyBullet* enemybullet : enemyBullets_) {
 			posBD = (posB.x - posD.x) * (posB.x - posD.x) +
 				    (posB.y - posD.y) * (posB.y - posD.y) +
 			        (posB.z - posD.z) * (posB.z - posD.z);

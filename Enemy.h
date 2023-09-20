@@ -31,7 +31,7 @@ public:	// メンバ関数
 	void SetGameScene(GameScene* gameScene) { gamescene_ = gameScene; }
 
 	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
+	//const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
 
 private:	// メンバ関数
 	void Fire();

@@ -13,9 +13,9 @@ void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotisi
 	textureHandle_ = textureHndle;
 	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
-	worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
+	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, 20.0f};
+	worldTransform_.translation_ = {0.0f, 0.0f, 40.0f};
 	//解放
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;

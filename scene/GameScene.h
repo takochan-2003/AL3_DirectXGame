@@ -76,7 +76,7 @@ public: // メンバ関数
 	/// </summary>
 	void UpdateEnemyPopCommands();
 
-	public:
+	public://リスト引っ越し
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
 
@@ -119,6 +119,11 @@ private: // メンバ変数
 		approach,
 		Leave,
 	};
+
+	// 敵の待機中のフラグ
+	bool enemyPopWaitFlag = true;
+	// 待機タイマー
+	int32_t enemyPopWaitTimer = 0;
 
 	static void (Enemy::*enemyMove[])(); // メンバ関数ポインタ
 	/// <summary>
