@@ -10,6 +10,8 @@ void Skydome::Initialize(Model* model, uint32_t textureHndle) {
 
 	model_ = model;
 
+	textureHandle_ = textureHndle;
+
 	input_ = Input::GetInstance();
 
 	worldTransform_.Initialize();

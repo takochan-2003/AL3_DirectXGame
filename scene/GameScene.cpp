@@ -66,6 +66,10 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 	
 	LoadEnemyPopData();
+
+	//レティクルのテクスチャ
+	TextureManager::Load("Reticle.png");
+
 }
 
 void GameScene::Update() { 
@@ -102,7 +106,7 @@ void GameScene::Update() {
 	UpdateEnemyPopCommands();
 
 	//自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 
 	//敵キャラの更新（リスト）
@@ -174,6 +178,9 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
+
+	//UI
+	player_->DrawUI();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる

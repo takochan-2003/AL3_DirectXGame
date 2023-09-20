@@ -2,11 +2,12 @@
 #include <cassert>
 #define _USE_MATH_DEFINES
 #include "ImGuiManager.h"
+#include "TextureManager.h"
 #include "keisan.h"
 #include <math.h>
 
 Player::~Player() {
-
+	delete sprite2DReticle_;
 }
 
 void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotision) {
@@ -29,6 +30,16 @@ void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotisi
 	//3Dレティクルのワールドトランスフォーム初期化
 	worldTransform3DReticle_.Initialize();
 
+	//レティクル用テクスチャ取得
+	uint32_t textureReticle = TextureManager::Load("Reticle.png");
+
+
+	Vector2 ReticlePos = {0.0f, 0.0f};
+	Vector4 Color = {(1), (1), (1), (1)};
+	Vector2 unker = {0.5f, 0.5f};
+	//スプライト生成
+	sprite2DReticle_ = Sprite::Create(textureReticle, ReticlePos, Color, unker);
+
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -43,7 +54,11 @@ void Player::Draw(ViewProjection& viewProjection) {
 	}
 }
 
-void Player::Update() {
+void Player::DrawUI() {
+	sprite2DReticle_->Draw();
+}
+
+void Player::Update(ViewProjection& viewProjection) {
 
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
@@ -127,6 +142,30 @@ void Player::Update() {
 		//    worldTransform3DReticle_.translation_);
 		
 		worldTransform3DReticle_.UpdateMatrix();
+	}
+
+	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	{
+		Vector3 positionReticle = {
+		    worldTransform3DReticle_.matWorld_.m[3][0],
+			worldTransform3DReticle_.matWorld_.m[3][1],
+		    worldTransform3DReticle_.matWorld_.m[3][2]
+		};
+
+		//ビューポート行列
+		Matrix4x4 matViewport =
+		    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+		//ビュー行列とプロジェクション行列、ビューポート行列を合成する
+		Matrix4x4 matViewProjectionViewport =
+		   Multiply(matViewport,Multiply(viewProjection.matView,viewProjection.matProjection));
+
+		//ワールド->スクリーン座標返還(ここで3Dから2Dになる)
+		positionReticle = Transform(positionReticle, matViewProjectionViewport);
+
+		//スプライトのレティクルに座標設定
+		sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+
 	}
 	
 	// 攻撃処理

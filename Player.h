@@ -4,6 +4,8 @@
 #include "Model.h"
 #include "PlayerBullet.h"
 #include "WorldTransform.h"
+#include "Sprite.h"
+#include "DirectXCommon.h"
 #include <list>
 
 /// <summary>
@@ -24,12 +26,15 @@ public:
 	/// 自キャラ
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(ViewProjection& viewProjection);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw(ViewProjection& viewProjection);
+
+	//UI描画
+	void DrawUI();
 
 	// ワールド座標を取得
 	 Vector3 GetWorldPosition();
@@ -64,7 +69,7 @@ private:
 	Input* input_ = nullptr;
 	float inputFloat[3] = {0, 0, 0};
 
-	
+	Sprite* sprite2DReticle_ = nullptr;
 
 	// 弾
 	std::list<PlayerBullet*> bullets_;
