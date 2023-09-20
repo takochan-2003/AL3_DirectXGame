@@ -115,12 +115,12 @@ void Player::Update() {
 		//3Dレティクルの座標を設定
 		worldTransform3DReticle_.translation_ = offset;
 		//ワールド行列の更新と転送
-		worldTransform_.matWorld_ = MakeAffineMatrix(
-		    worldTransform_.scale_,
-			worldTransform_.rotation_,
-			worldTransform_.translation_);
+		worldTransform3DReticle_.matWorld_ = MakeAffineMatrix(
+		    worldTransform3DReticle_.scale_,
+			worldTransform3DReticle_.rotation_,
+		    worldTransform3DReticle_.translation_);
 		
-		worldTransform_.TransferMatrix();
+		worldTransform3DReticle_.UpdateMatrix();
 	}
 	
 	// 攻撃処理

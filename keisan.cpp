@@ -14,7 +14,7 @@ Vector3 Add(Vector3 vector1, Vector3 vector2) {
 	return result;
 }
 
-Vector3 Subtract(Vector3 vector1, Vector3 vector2) {
+Vector3 Subtract(Vector3  vector1, Vector3 vector2) {
 	Vector3 result;
 	result.x = vector1.x - vector2.x;
 	result.y = vector1.y - vector2.y;
@@ -22,7 +22,7 @@ Vector3 Subtract(Vector3 vector1, Vector3 vector2) {
 	return result;
 }
 
-Vector3 VectorMultiply(Vector3 vector1, Vector3 vector2) {
+Vector3 VectorMultiply(Vector3 vector1, float k) {
 	Vector3 result;
 	result.x = vector1.x * k;
 	result.y = vector1.y * k;

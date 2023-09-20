@@ -15,7 +15,7 @@ void RailCamera::Initialize(Vector3& worldPos, Vector3& rotate) {
 void RailCamera::Update() {
 
 	//移動
-	Vector3 move = {0, 0, -1};
+	Vector3 move = {0, 0, -0.3f};
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	//回転
 	const float kRotSpeed = 0.00f;
