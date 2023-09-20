@@ -5,17 +5,22 @@
 #include "keisan.h"
 #include <math.h>
 
+Player::~Player() {
 
+}
 
 void Player::Initialize(Model* model, uint32_t textureHndle,Vector3 playerPotision) {
 	assert(model);
 	model_ = model;
 	
+	textureHandle_ = textureHndle;
+
 	worldTransform_.Initialize();
 	input_ = Input::GetInstance();
 	worldTransform_.scale_ = {3.0f, 3.0f, 3.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {0.0f, 0.0f, 40.0f};
+	worldTransform_.translation_ = playerPotision;
+	//worldTransform_.translation_ = {0.0f, 0.0f, 40.0f};
 	//解放
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
@@ -113,12 +118,13 @@ void Player::Update() {
 		//ベクトルの長さを整える
 		offset = VectorIndexMultiply(Normalize(offset),kDistancePlayerTo3DReticle);
 		//3Dレティクルの座標を設定
-		worldTransform3DReticle_.translation_ = offset;
+		worldTransform3DReticle_.translation_ = Add(offset,GetWorldPosition());
 		//ワールド行列の更新と転送
-		worldTransform3DReticle_.matWorld_ = MakeAffineMatrix(
-		    worldTransform3DReticle_.scale_,
-			worldTransform3DReticle_.rotation_,
-		    worldTransform3DReticle_.translation_);
+		
+		//worldTransform3DReticle_.matWorld_ = MakeAffineMatrix(
+		//    worldTransform3DReticle_.scale_,
+		//	worldTransform3DReticle_.rotation_,
+		//    worldTransform3DReticle_.translation_);
 		
 		worldTransform3DReticle_.UpdateMatrix();
 	}
@@ -146,14 +152,21 @@ void Player::Attack() {
 		Vector3 velocity(0, 0, 0);
 		//向き
 		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-		velocity = VectorSubtract(worldTransform3DReticle_.translation_,worldTransform_.translation_);
+
+		Vector3 world3D = {
+		    worldTransform3DReticle_.matWorld_.m[3][0],
+		    worldTransform3DReticle_.matWorld_.m[3][1],
+		    worldTransform3DReticle_.matWorld_.m[3][2],
+		};
+		//velocity = VectorSubtract(worldTransform3DReticle_.translation_,worldTransform_.translation_);
+		velocity =VectorSubtract(world3D, GetWorldPosition());
 		velocity = VectorIndexMultiply(Normalize(velocity),kBulletSpeed);
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 		// 弾を登録する
 		//bullet_ = newBullet;
-		bullets_.push_back(newBullet);
+ 		bullets_.push_back(newBullet);
 	}
 }
 
@@ -172,5 +185,4 @@ void Player::OnCollision() {}
 //親子関係を結ぶ
 void Player::Setparent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 
-Player::~Player() {}
-
+//

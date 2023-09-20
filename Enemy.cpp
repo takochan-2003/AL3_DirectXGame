@@ -15,13 +15,14 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 
 	textureHandle_ = TextureManager::Load("KOKUDO.png");
 
+	velocity_ = velocity;
 
 	enemy_ = new Enemy();
 
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = {20.0f, 20.0f, 20.0f};
 	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
-	worldTransform_.translation_ = {40.0f, 100.0f, 300.0f};
+	worldTransform_.translation_ = position;
 
 	Approach();
 	input_ = Input::GetInstance();
@@ -47,7 +48,7 @@ void Enemy::Update(){
 
 	Vector3 move = {0, 0, -0.2f};
 	Vector3 leave = {0.6f, 0.6f, -1.0f};
-	const float kCharacterSpeed = 0.2f;
+	//const float kCharacterSpeed = 0.2f;
 
 	////移動処理(SWitch)
 	//switch (phase_) { case Phase::approach:

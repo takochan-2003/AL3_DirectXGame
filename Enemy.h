@@ -51,6 +51,9 @@ private:	// メンバ変数
 		Leave,
 	};
 
+	//速度
+	Vector3 velocity_ = {0};
+
 	Player* player_ = nullptr;
 
 	WorldTransform worldTransform_;
@@ -65,6 +68,8 @@ private:	// メンバ変数
 	std::list<EnemyBullet*> bullets_;
 	
 	GameScene* gamescene_ = nullptr;
+
+	
 	
 
 };

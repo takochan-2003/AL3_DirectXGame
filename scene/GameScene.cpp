@@ -38,7 +38,7 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	//自キャラの生成
 	player_ = new Player();
-	Vector3 playerPosition(0, 0, -1);
+	Vector3 playerPosition(0, 0, 40.0f);
 	player_->Initialize(model_,textureHandle_,playerPosition);
 	//敵の速度
 	const float kEnemySpeedX = 0.1f;
@@ -285,7 +285,10 @@ void GameScene::UpdateEnemyPopCommands() {
 
 void GameScene::CheakAllCollisions() {
 	//判定対象AとBの座標
-	Vector3 posA, posB, posC, posD;
+	Vector3 posA = {0};
+	Vector3 posB = {0};
+	Vector3 posC = {0};
+	Vector3 posD = {0};
 
 	//2間点の距離(自キャラと敵弾の当たり判定)
 	float posAB;
@@ -334,7 +337,7 @@ void GameScene::CheakAllCollisions() {
 	
 
 	// 2間点の距離(自弾と敵キャラの当たり判定)
-	float posCD;
+	float posCD=0;
 	for (Enemy* enemy : enemys_) {
 		// 敵キャラのワールド座標
 		posC = enemy->GetWorldPosition();
@@ -359,7 +362,7 @@ void GameScene::CheakAllCollisions() {
 	#pragma endregion
 
 	#pragma region 自弾と敵弾の当たり判定
-	float posBD;
+	float posBD = 0;
 	for (PlayerBullet* playerbullet : playerBullets) {
 		for (EnemyBullet* enemybullet : enemyBullets_) {
 			posBD = (posB.x - posD.x) * (posB.x - posD.x) +

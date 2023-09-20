@@ -56,11 +56,16 @@ private:
 	//3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 
+	
+
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Player* player_ = nullptr;
 	Input* input_ = nullptr;
 	float inputFloat[3] = {0, 0, 0};
+
+	
+
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 

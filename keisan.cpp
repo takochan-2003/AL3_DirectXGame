@@ -22,11 +22,11 @@ Vector3 Subtract(Vector3  vector1, Vector3 vector2) {
 	return result;
 }
 
-Vector3 VectorMultiply(Vector3 vector1, float k) {
+Vector3 VectorMultiply(Vector3 vector1, Vector3 vector2) {
 	Vector3 result;
-	result.x = vector1.x * k;
-	result.y = vector1.y * k;
-	result.z = vector1.z * k;
+	result.x = vector1.x * vector2.x;
+	result.y = vector1.y * vector2.y;
+	result.z = vector1.z * vector2.z;
 	return result;
 }
 
@@ -240,12 +240,12 @@ Vector3 VectorMatrixMultiply(Vector3 v, const Matrix4x4 m1) {
 	return result;
 }
 
-Vector3 VectorIndexMultiply(Vector3 v, float k) { 
+Vector3 VectorIndexMultiply(Vector3 v, float index) { 
 	Vector3 result;
 
-	result.x = v.x * k;
-	result.y = v.y * k;
-	result.z = v.z * k;
+	result.x = v.x * index;
+	result.y = v.y * index;
+	result.z = v.z * index;
 
 	return result;
 }
