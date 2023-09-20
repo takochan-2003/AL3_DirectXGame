@@ -55,7 +55,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 }
 
 void Player::DrawUI() {
-	sprite2DReticle_->Draw();
+	sprite2DReticle_->Draw(); 
 }
 
 void Player::Update(ViewProjection& viewProjection) {
@@ -158,7 +158,7 @@ void Player::Update(ViewProjection& viewProjection) {
 
 		//ビュー行列とプロジェクション行列、ビューポート行列を合成する
 		Matrix4x4 matViewProjectionViewport =
-		   Multiply(matViewport,Multiply(viewProjection.matView,viewProjection.matProjection));
+		    Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
 
 		//ワールド->スクリーン座標返還(ここで3Dから2Dになる)
 		positionReticle = Transform(positionReticle, matViewProjectionViewport);
