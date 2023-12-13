@@ -20,6 +20,8 @@ public:
 	/// </summary>
 	void Initialize(Model* model, uint32_t textureHndle, Vector3 playerPotision);
 
+	//SliderFloat3
+
 	/// <summary>
 	/// 自キャラ
 	/// 更新

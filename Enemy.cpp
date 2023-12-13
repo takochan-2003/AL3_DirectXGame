@@ -127,7 +127,6 @@ Enemy::~Enemy() {}
 void Enemy::Approach() {
 	//発射タイマーを初期化
 	fireTimer_ = 30;
-
 }
 
 void Enemy::Fire() {
