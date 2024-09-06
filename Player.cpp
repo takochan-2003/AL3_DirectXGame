@@ -161,15 +161,6 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	//マウスカーソルのスクリーン座標からワールド座標を取得して3Dレティクル配置
 	{ 
-		////ゲームパッドの状態を得る変数
-		//XINPUT_STATE joyState;
-		//
-		////ゲームパッド状態取得
-		//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		//	move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
-		//	move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
-		//}
-
 		//スプライトの現在座標を取得
 		Vector2 spritePosition = sprite2DReticle_->GetPosition();
 
@@ -193,7 +184,7 @@ void Player::Update(ViewProjection& viewProjection) {
 		ScreenToClient(hwnd, &mousePosition);
 
 		//マウス座標を2Dレティクルのスプライトに大にゅする
-		//sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
+		sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
 
 		// ビューポート行列
 		Matrix4x4 matViewport2 =

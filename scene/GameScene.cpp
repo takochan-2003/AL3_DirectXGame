@@ -127,7 +127,6 @@ void GameScene::Update() {
 		}
 		return false;
 	});
-\
 
 }
 
